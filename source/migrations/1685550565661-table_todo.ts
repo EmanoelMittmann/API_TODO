@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
-import { categories } from '../entities/Todo'
 
 export class TableTodo1685550565661 implements MigrationInterface {
 
@@ -12,7 +11,9 @@ export class TableTodo1685550565661 implements MigrationInterface {
                         name: 'id',
                         type: 'int',
                         isPrimary: true,
-                        isNullable: false
+                        isNullable: false,
+                        isGenerated: true,
+                        generationStrategy:'increment'
                     },
                     {
                         name:'Title',
@@ -26,8 +27,12 @@ export class TableTodo1685550565661 implements MigrationInterface {
                     },
                     {
                         name:'categories',
-                        type:'enum',
-                        enum:['WARN','FINISH','PENDING'] 
+                        type:'varchar(50)',
+                    },
+                    {
+                        name: 'user_id',
+                        type: 'int',
+                        foreignKeyConstraintName: 'user_id'
                     }
                 ]
             })

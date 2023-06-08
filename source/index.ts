@@ -7,7 +7,6 @@ const server = express()
 App.initialize().then(() => {
     server.use(express.json())
 
-    
     server.get('/', (req, res) => {
         res.send('Rodando API')
     })
