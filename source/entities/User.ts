@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import TodoTask from './Todo'
 
 @Entity({name: 'Users'})
 export default class User{
@@ -13,4 +14,7 @@ export default class User{
 
     @Column({type: 'text'})
         password!: string
+
+    @OneToMany(type => TodoTask, user => User)
+        tasks: TodoTask[]
 }

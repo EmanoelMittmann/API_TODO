@@ -29,7 +29,7 @@ export class TableUser1685543953871 implements MigrationInterface {
                     name:'password',
                     type:'varchar(500)',
                     isNullable:false
-                }
+                },
             ]
         })
        )

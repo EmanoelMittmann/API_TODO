@@ -1,25 +1,21 @@
-import {Entity,Column, PrimaryGeneratedColumn} from 'typeorm'
+import {Entity,Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, JoinTable} from 'typeorm'
+import User from './User'
 
-export enum categories{
-    'WARN',
-    'FINISH',
-    'PENDING'
-}
-
-@Entity({name: 'Todo_Task'})
+@Entity({name: 'TodoTask'})
 export default class TodoTask{
     @PrimaryGeneratedColumn()
         id!:number
 
     @Column({type:'text'})
-        title!:string
+        Title!:string
 
     @Column({type:'text'})
-        description!: string
+        Description!: string
 
-    @Column({
-        type: 'enum',
-        enum: categories
-    })
-        role: categories
+    @Column({type:'text'})
+        categories: string
+
+    @ManyToOne(type => User, lessons => TodoTask )
+    @JoinColumn({name: 'user_id', foreignKeyConstraintName: 'user_id',referencedColumnName: 'id'})
+        user: User
 }

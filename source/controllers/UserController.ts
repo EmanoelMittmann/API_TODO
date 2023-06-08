@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import {hash, compare} from 'bcrypt'
 import { userRepository } from '../repository/userRepository'
 import jwt from 'jsonwebtoken'
+import User from '../entities/User'
 
 export class UserController {
     async create(req: Request, res: Response){
@@ -32,10 +33,12 @@ export class UserController {
         const {email, password} = req.body
 
         const user = await userRepository.findOneBy({email})
-
+        
+        if(!user)return res.status(401).send('Email ou senha Invalidos')
+        
         const verify = await compare(password, user.password)
 
-        if(!verify || !user) throw new Error('Email ou senha Invalidos')
+        if(!verify) return res.status(401).send('Email ou senha Invalidos')
 
         const token = jwt.sign({id: user.id}, process.env.JWT_PASS ?? '', {
             expiresIn: '8h'
@@ -49,7 +52,7 @@ export class UserController {
         })
     }
 
-    async ListUsers(req: any, res: Response){
+    async ListUsers(req: Request, res: Response){
         const users = await userRepository.find({
             select: {
                 id: true,
@@ -62,5 +65,24 @@ export class UserController {
             take: 5
         })
         res.status(200).send(users)
+    }
+
+    async updateUser(req: Request, res: Response){
+        const [{email,name},{id}] = [req.body, req.params]
+
+        try {
+            await userRepository
+                .createQueryBuilder()
+                .update(User)
+                .set({
+                    email:email,
+                    name:name
+                })
+                .where('id = :id',{id: id})
+                .execute()
+            return res.status(200).send('Usuario Atualizado')
+        } catch (error) {
+            return res.status(500).send(error)
+        }
     }
 }
